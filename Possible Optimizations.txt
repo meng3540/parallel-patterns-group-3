@@ -1,0 +1,9 @@
+Possible Optimizations:
+(Note: more details TBA)
+
+1. Tiling
+Tiling can be done to reduce the number of slow global memory accesses during the stencil process. 
+Tiling in the stencil algorithm is more effective the lower the order of the stencil. 
+A larger input grid would increase the amount of data that is reused and increase the efficiency from tiling.
+
+2. Thread coarsening
