@@ -2,8 +2,7 @@
 ![image](https://github.com/user-attachments/assets/56bbd783-8bcb-462e-ad9c-a849a6686640)
 
 # Profiling Results (CUBEDIM of 512)
-![image](https://github.com/user-attachments/assets/04bc61cd-f54f-4b73-9f04-4f547bb80b4f)
-![image](https://github.com/user-attachments/assets/8aabb426-bab6-4422-bd84-f2ea8ba48cb8)
-![image](https://github.com/user-attachments/assets/6210219b-8a69-4eda-8dec-cc15491c1c3e)
-
+![image](https://github.com/user-attachments/assets/33fc158b-93a4-44b6-8da5-52388214f9eb)
+![image](https://github.com/user-attachments/assets/1c290da0-72d1-4f81-ac3b-8b47299cfebb)
+![image](https://github.com/user-attachments/assets/c7005fde-04e2-4e13-8033-a3608901d13d)
 
