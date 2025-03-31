@@ -5,6 +5,7 @@
 #include <math.h>
 
 // function by ahsan
+//displaying 3D mattrices
 void disp3DMat(float* mat, int rows, int cols, int height) {
 	printf("{\n\n");
 	for (int h = 0; h < height; h++) {
@@ -28,9 +29,15 @@ __global__ void stencil_kernel(float* in, float* out, int N, float c0, float c1,
 
 	//printf("i, j, k = %d, %d, %d\n", i, j, k);
 	//printf("Executing Thread With Index: %d\n", i * N * N + j * N + k);
-
+	//Stencil calculation within boundary of input data.
 	if (i >= 1 && i < N - 1 && j >= 1 && j < N - 1 && k >= 1 && k < N - 1) {
-		out[i * N * N + j * N + k] = c0 * in[i * N * N + j * N + k] + c1 * in[i * N * N + j * N + k - 1] + c2 * in[i * N * N + j * N + k + 1] + c3 * in[i * N * N + (j - 1) * N + k] + c4 * in[i * N * N + (j + 1) * N + k] + c5 * in[(i - 1) * N * N + j * N + k] + c6 * in[(i + 1) * N * N + j * N + k];
+		out[i * N * N + j * N + k] = c0 * in[i * N * N + j * N + k] +  //center element of 3D data
+					     c1 * in[i * N * N + j * N + k - 1] + //elements in one step forward (k+1) and backwards(k-1) of the center element in x-direction
+				 	     c2 * in[i * N * N + j * N + k + 1] +  
+					     c3 * in[i * N * N + (j - 1) * N + k] + //elements in one step forward (j+1) and backwards(j-1) of the center element in y-direction
+					     c4 * in[i * N * N + (j + 1) * N + k] + 
+					     c5 * in[(i - 1) * N * N + j * N + k] + //elements in one step forward (i+1) and backwards(i-1) of the center element in z-direction
+					     c6 * in[(i + 1) * N * N + j * N + k];
 		//printf("Executing Thread With Index: %d\n", i * N * N + j * N + k);
 	}
 }
