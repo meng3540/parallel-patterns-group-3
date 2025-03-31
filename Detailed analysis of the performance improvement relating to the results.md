@@ -1,3 +1,6 @@
+# Optimization Results Table
+![image](https://github.com/user-attachments/assets/83649612-90b0-49a4-8c75-20cc0e100c5e)
+
 Step 1 (Basic)
 •	This is the unoptimized version.
 •	Execution Time: 63.9325 ms
