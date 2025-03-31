@@ -10,3 +10,9 @@ A larger input grid would increase the amount of data that is reused and increas
 each thread in the GPU can perform one than one operation.
 fewer threads means fewer scheduling and register overheads.
 each threads do more work instead of stalling.
+
+3> Register Tiling
+load a small tile of data into registers.
+achieve higher occupancy and instruction-level parallelism.
+Registers are the fastest memory (faster than shared and global memory).
+Minimizes memory accesses by reusing data.
