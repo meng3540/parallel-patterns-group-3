@@ -232,31 +232,35 @@ int main(int argc, char** argv)
 		cudaEventRecord(start);
 		stencil_kernel << <gridSize, blockSize >> > (d_in, d_out, CUBEDIM);
 		cudaEventRecord(stop);
-		bytes_transferred = (CUBEDIM^3) * 8 * 4;
+		bytes_transferred = ((CUBEDIM^3) * 7 + ((CUBEDIM-2)^3) * 1) * 4;
 	}
 	else if (OPTIMIZATION_MODE == 1) { // with tiling
 		printf("\n\nRunning tiled kernel...\n\n");
 		cudaEventRecord(start);
 		stencil_kernelT << <gridSizeT, blockSizeT >> > (d_in, d_out, CUBEDIM);
 		cudaEventRecord(stop);
+		bytes_transferred = (gridSizeT.x * gridSizeT.y * gridSizeT.z) * (IN_TILE_DIM^3 + OUT_TILE_DIM^3) * 4;
 	}
 	else if (OPTIMIZATION_MODE == 2) { // with thread coarsening
 		printf("\n\nRunning tiled and thread coarsened kernel...\n\n");
 		cudaEventRecord(start);
 		stencil_kernelTC << <gridSizeTC, blockSizeTC >> > (d_in, d_out, CUBEDIM);
 		cudaEventRecord(stop);
+		bytes_transferred = (gridSizeTC.x * gridSizeTC.y * gridSizeTC.z) * (IN_TILE_DIMC^3 + OUT_TILE_DIMC^3) * 4;
 	}
 	else if (OPTIMIZATION_MODE == 3) { // with register tiling
 		printf("\n\nRunning register tiled and thread coarsened kernel...\n\n");
 		cudaEventRecord(start);
 		stencil_kernelTCRT << <gridSizeTCRT, blockSizeTCRT >> > (d_in, d_out, CUBEDIM);
 		cudaEventRecord(stop);
+		bytes_transferred = (gridSizeTCRT.x * gridSizeTCRT.y * gridSizeTCRT.z) * (IN_TILE_DIMCRT^3 + OUT_TILE_DIMCRT^3) * 4;
 	}
 	else {
 		printf("\n\nIncorrect optimization mode, will run regular kernel\n\n");
 		cudaEventRecord(start);
 		stencil_kernel << <gridSize, blockSize >> > (d_in, d_out, CUBEDIM);
 		cudaEventRecord(stop);
+		bytes_transferred = ((CUBEDIM^3) * 7 + ((CUBEDIM-2)^3) * 1) * 4;
 	}
 
 	//Copy the GPU memory back to the CPU here
@@ -290,15 +294,27 @@ int main(int argc, char** argv)
 
 	// print kernel execution time
 	printf("\n\nKernel execution time: %.4f milliseconds\n\n", milliseconds);
+
 	// print effecitve bandwidth
 	printf("\n\nEffective Bandwidth (GB/s): %f\n\n", bytes_transferred / milliseconds / 1e6);
+
 	// print block and grid dims
-	printf("\n\nThe block dimensions are %d x %d x %d\n", blockSize.x, blockSize.y, blockSize.z);
-	printf("The grid dimensions are %d x %d x %d\n\n", gridSize.x, gridSize.y, gridSize.z);
-	printf("\n\nThe block dimensions with tiling are %d x %d x %d\n", blockSizeT.x, blockSizeT.y, blockSizeT.z);
-	printf("The grid dimensions with tiling are %d x %d x %d\n\n", gridSizeT.x, gridSizeT.y, gridSizeT.z);
-	printf("\n\nThe block dimensions with tiling and thread coarsening are %d x %d x %d\n", blockSizeTC.x, blockSizeTC.y, blockSizeTC.z);
-	printf("The grid dimensions with tiling and thread coarsening are %d x %d x %d\n\n", gridSizeTC.x, gridSizeTC.y, gridSizeTC.z);
+	if (OPTIMIZATION_MODE == 0) {
+		printf("\n\nThe block dimensions are %d x %d x %d\n", blockSize.x, blockSize.y, blockSize.z);
+		printf("The grid dimensions are %d x %d x %d\n\n", gridSize.x, gridSize.y, gridSize.z);
+	}
+	else if (OPTIMIZATION_MODE == 1) { 
+		printf("\n\nThe block dimensions with tiling are %d x %d x %d\n", blockSizeT.x, blockSizeT.y, blockSizeT.z);
+		printf("The grid dimensions with tiling are %d x %d x %d\n\n", gridSizeT.x, gridSizeT.y, gridSizeT.z);
+	}
+	else if (OPTIMIZATION_MODE == 2) {
+		printf("\n\nThe block dimensions with tiling and thread coarsening are %d x %d x %d\n", blockSizeTC.x, blockSizeTC.y, blockSizeTC.z);
+		printf("The grid dimensions with tiling and thread coarsening are %d x %d x %d\n\n", gridSizeTC.x, gridSizeTC.y, gridSizeTC.z);
+	}
+	else if (OPTIMIZATION_MODE == 3) {
+		printf("\n\nThe block dimensions with register tiling and thread coarsening are %d x %d x %d\n", blockSizeTCRT.x, blockSizeTCRT.y, blockSizeTCRT.z);
+		printf("The grid dimensions with register tiling and thread coarsening are %d x %d x %d\n\n", gridSizeTCRT.x, gridSizeTCRT.y, gridSizeTCRT.z);
+	}
 
 	return 0;
 }
